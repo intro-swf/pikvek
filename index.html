@@ -4,18 +4,20 @@
     <title>pikvek 0.1</title>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js' data-main='pikvek-main.js'></script>
     <style>
-      textarea#svgtext { width: 100%; }
+      textarea#svgtext { width: 100%; height:10ex; }
       #rendercontainer {
-        background: black;
+        background: rgba(0,0,0, 0.5);
         padding: 5px;
       }
     </style>
   </head>
   <body>
     <textarea id='svgtext'>
-      &lt;svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"&gt;
-        &lt;path d="M 10,390 C 10,10 390,10 390,390" style="fill:none; stroke:#fff;"/&gt;
-      &lt;/svg&gt;
+      {
+        "paths": [
+          {d:"M 10,390 C 10,10 390,10 390,390", fill:"none", stroke:"#fff"}
+        ]
+      }
     </textarea>
     <button id='renderbutton' disabled>Render</button>
     <div id='rendercontainer'>
