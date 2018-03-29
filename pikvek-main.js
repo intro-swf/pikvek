@@ -16,6 +16,7 @@ require(['//cdnjs.cloudflare.com/ajax/libs/require-domReady/2.0.1/domReady.min.j
   renderbutton.onclick = function() {
     var svgdoc = parser.parseFromString(svgtext.value, 'image/svg+xml');
     var svg = svgdoc.documentElement;
+    svg = document.adoptNode(svg);
     console.log(svg);
     rendercanvas.width = svg.width.baseVal.value;
     rendercanvas.height = svg.height.baseVal.value;
