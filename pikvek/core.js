@@ -14,10 +14,10 @@ define(function() {
             break;
           case 0:
             if (p2.y < p1.y) {
-              ctx.rect(p1.x, p2.y, 10000, 1 + p1.y - p2.y);
+              ctx.rect(p1.x, p2.y, 10000, p1.y - p2.y);
             }
             else {
-              ctx.rect(p1.x, p1.y, 10000, 1 + p2.y - p1.y);
+              ctx.rect(p1.x, p1.y, 10000, p2.y - p1.y);
             }
             return;
           case 1:
@@ -32,21 +32,21 @@ define(function() {
             var deltaError = (left.y - right.y) / (right.x - left.x);
             var error = 0;
             for (var x = left.x; x < right.x; x++) {
-              ctx.rect(x, y, 1, 1 + left.y - y);
+              ctx.rect(x, y, 1, left.y - y);
               error += deltaError;
               while (error >= 0.5) {
                 y--;
                 error -= 1;
               }
             }
-            ctx.rect(right.x, right.y, 10000, 1 + left.y - right.y);
+            ctx.rect(right.x, right.y, 10000, left.y - right.y);
             break;
           case 0:
             /* - horizontal */
             break;
           case 1:
             /* \ slope */
-            var y = 1 + left.y;
+            var y = left.y;
             var deltaError = (right.y - left.y) / (right.x - left.x);
             var error = 0;
             for (var x = left.x; x < right.x; x++) {
