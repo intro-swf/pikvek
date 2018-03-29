@@ -5,6 +5,10 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js' data-main='pikvek-main.js'></script>
     <style>
       textarea#svgtext { width: 100%; }
+      #rendercontainer {
+        background: black;
+        padding: 5px;
+      }
     </style>
   </head>
   <body>
@@ -14,6 +18,8 @@
       &lt;/svg&gt;
     </textarea>
     <button id='renderbutton' disabled>Render</button>
-    <canvas id='rendercanvas'></canvas>
+    <div id='rendercontainer'>
+      <canvas id='rendercanvas'></canvas>
+    </div>
   </body>
 </head>
