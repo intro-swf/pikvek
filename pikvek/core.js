@@ -68,7 +68,7 @@ define(function() {
       }
       ctx.fill('evenodd');
     },
-    line: function(ctx, points, loop) {
+    lines: function(ctx, points, loop) {
       function edge(p1, p2) {
         var left, right;
         switch (Math.sign(p2.x - p1.y)) {
