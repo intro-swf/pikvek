@@ -3,7 +3,7 @@ requirejs.config({
   waitSeconds: 0,
 });
 
-require(['//cdnjs.cloudflare.com/ajax/libs/require-domReady/2.0.1/domReady.min'], function() {
+require(['//cdnjs.cloudflare.com/ajax/libs/require-domReady/2.0.1/domReady.min.js'], function() {
   
   'use strict';
   
