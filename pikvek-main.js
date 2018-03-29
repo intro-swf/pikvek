@@ -11,9 +11,11 @@ require(['//cdnjs.cloudflare.com/ajax/libs/require-domReady/2.0.1/domReady.min.j
   var renderbutton = document.getElementById('renderbutton');
   var rendercanvas = document.getElementById('rendercanvas');
   
-  console.log(svgtext, renderbutton, rendercanvas);
+  var parser = new DOMParser;
   
   renderbutton.onclick = function() {
+    var svg = parser.parseFromString(svgtext.value, 'image/svg+xml');
+    console.log(svg);
   };
   renderbutton.disabled = false;
   
