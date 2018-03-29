@@ -27,9 +27,7 @@ require([
   };
   renderbutton.disabled = false;
   
-  var ctx = rendercanvas.getContext('2d');
-  ctx.fillStyle = '#fff';
-  core.fill(ctx, [
+  var points = [
     {x:247, y:887 - 650},
     {x:213, y:977 - 650},
     {x:168, y:893 - 650},
@@ -42,6 +40,11 @@ require([
     {x:333, y:734 - 650},
     {x:282, y:816 - 650},
     {x:343, y:890 - 650},
-  ]);
+  ];
+  var ctx = rendercanvas.getContext('2d');
+  ctx.fillStyle = '#fff';
+  core.fill(ctx, points);
+  ctx.fillStyle = '#000';
+  core.lines(ctx, points, true);
   
 });
