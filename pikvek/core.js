@@ -68,6 +68,69 @@ define(function() {
       }
       ctx.fill('evenodd');
     },
+    line: function(ctx, points, loop) {
+      function edge(p1, p2) {
+        var left, right;
+        switch (Math.sign(p2.x - p1.y)) {
+          case -1:
+            left = p2;
+            right = p1;
+            break;
+          case 0:
+            if (p2.y < p1.y) {
+              ctx.rect(p2.x, p2.y, 1, p1.y - p2.y);
+            }
+            else {
+              ctx.rect(p2.x, p2.y, 1, p1.y - p2.y);
+            }
+            return;
+          case 1:
+            left = p1;
+            right = p2;
+            break;
+        }
+        switch (Math.sign(right.y - left.y)) {
+          case -1:
+            var deltaerr = (left.y - right.y) / (right.x - left.x);
+            var error = 0;
+            var y = left.y;
+            for (var x = left.x; x < right.x; x++) {
+              ctx.rect(x, y, 1, 1);
+              error += deltaerr;
+              while (error >= 0.5) {
+                y--;
+                error -= 1;
+              }
+            }
+            break;
+          case 0:
+            ctx.rect(left.x, left.y, right.x - left.x, 1);
+            break;
+          case 1:
+            var deltaerr = (right.y - left.y) / (right.x - left.x);
+            var error = 0;
+            var y = left.y;
+            for (var x = left.x; x < right.x; x++) {
+              ctx.rect(x, y, 1, 1);
+              error += deltaerr;
+              while (error >= 0.5) {
+                y++;
+                error -= 1;
+              }
+            }
+            break;
+        }
+        if (p1.y === p2.y) {
+          return;
+        }
+      }
+      ctx.beginPath();
+      if (loop) edge(points[points.length-1], points[0]);
+      for (var i_p2 = 1; i_p2 < points.length; i_p2++) {
+        edge(points[i_p2-1], points[i_p2]);
+      }
+      ctx.fill();
+    },
   };
   
   return core;
