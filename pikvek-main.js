@@ -30,12 +30,15 @@ require([
     for (var node = doc.documentElement.firstChild; node; node = node.nextSibling) {
       if (node.nodeType !== 1) continue;
       ctx.save();
-      ctx.translate(node.getAttribute('x') || 0, node.getAttribute('y') || 0);
+      ctx.translate(
+        node.getAttribute('x') || 0,
+        node.getAttribute('y') || 0);
       switch (node.nodeName) {
         case 'shape':
           var path = pathData.parse(node.getAttribute('path') || '');
           path = pathData.absolutize(path);
           path = pathData.reduce(path);
+          path = pathData.linearize(path);
           var points = [];
           var loop = false;
           for (var i = 0; i < path.length; i++) {
