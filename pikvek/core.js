@@ -62,7 +62,10 @@ define(function() {
         }
       }
       ctx.beginPath();
-      edge(points[points.length-1], points[0]);
+      var last = points[points.length-1];
+      if (last.x !== points[0].x || last.y !== points[0].y) {
+        edge(last, points[0]);
+      }
       for (var i_p2 = 1; i_p2 < points.length; i_p2++) {
         edge(points[i_p2-1], points[i_p2]);
       }
@@ -127,7 +130,12 @@ define(function() {
       }
       
       ctx.beginPath();
-      if (loop) edge(points[points.length-1], points[0]);
+      if (loop) {
+        var last = points[points.length-1];
+        if (last.x !== points[0].x || last.y !== points[0].y) {
+          edge(last, points[0]);
+        }
+      }
       for (var i_p2 = 1; i_p2 < points.length; i_p2++) {
         edge(points[i_p2-1], points[i_p2]);
       }
