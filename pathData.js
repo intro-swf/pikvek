@@ -874,11 +874,160 @@ define(function() {
 
     return reducedPathData;
   }
+  
+  const curve_recursion_limit = 32;
+  const curve_collinearity_epsilon = 1e-30;
+  const m_angle_tolerance = 10*Math.PI/180.0;
+  const curve_angle_tolerance_epsilon = 0.01;
+  const m_distance_tolerance = 0.5;
+  const m_cusp_limit = 0.0;
+
+  function linearizePathData(pathData) {
+    var result = [];
+    var lastPoint = [0, 0];
+
+    function recursive_bezier(x1,y1, x2,y2, x3,y3, x4,y4, level) {
+      if (level > curve_recursion_limit) return;
+
+      var x12   = (x1 + x2) / 2;
+      var y12   = (y1 + y2) / 2;
+      var x23   = (x2 + x3) / 2;
+      var y23   = (y2 + y3) / 2;
+      var x34   = (x3 + x4) / 2;
+      var y34   = (y3 + y4) / 2;
+      var x123  = (x12 + x23) / 2;
+      var y123  = (y12 + y23) / 2;
+      var x234  = (x23 + x34) / 2;
+      var y234  = (y23 + y34) / 2;
+      var x1234 = (x123 + x234) / 2;
+      var y1234 = (y123 + y234) / 2;
+
+      if (level > 0) {
+        var dx = x4-x1;
+        var dy = y4-y1;
+
+        var d2 = Math.abs(((x2 - x4) * dy - (y2 - y4) * dx));
+        var d3 = Math.abs(((x3 - x4) * dy - (y3 - y4) * dx));
+
+        var da1, da2;
+
+        if (d2 > curve_collinearity_epsilon && d3 > curve_collinearity_epsilon) {
+          if ((d2 + d3)*(d2 + d3) <= m_distance_tolerance * (dx*dx + dy*dy)) {
+            if (m_angle_tolerance < curve_angle_tolerance_epsilon) {
+              result.push({type:'L', values:[x1234, y1234]});
+              return;
+            }
+
+            var a23 = Math.atan2(y3 - y2, x3 - x2);
+            da1 = Math.abs(a23 - Math.atan2(y2 - y1, x2 - x1));
+            da2 = Math.abs(Math.atan2(y4 - y3, x4 - x3) - a23);
+            if (da1 >= Math.PI) da1 = 2*Math.PI - da1;
+            if (da2 >= Math.PI) da2 = 2*Math.PI - da2;
+
+            if (da1 + da2 < m_angle_tolerance) {
+              result.push({type:'L', values:[x1234, y1234]});
+              return;
+            }
+
+            if (m_cusp_limit != 0.0) {
+              if (da1 > m_cusp_limit) {
+                result.push({type:'L', values:[x2, y2]});
+                return;
+              }
+
+              if (da2 > m_cusp_limit) {
+                result.push({type:'L', values:[x3, y3]});
+                return;
+              }
+            }
+          }
+        }
+        else {
+          if (d2 > curve_collinearity_epsilon) {
+            if (d2 * d2 <= m_distance_tolerance * (dx*dx + dy*dy)) {
+              if (m_angle_tolerance < curve_angle_tolerance_epsilon) {
+                result.push({type:'L', values:[x1234, y1234]});
+                return;
+              }
+
+              da1 = Math.abs(Math.atan2(y3 - y2, x3 - x2) - Math.atan2(y2 - y1, x2 - x1));
+              if (da1 >= Math.PI) da1 = 2*Math.PI - da1;
+
+              if (da1 < m_angle_tolerance) {
+                result.push(
+                  {type:'L', values:[x2, y2]},
+                  {type:'L', values:[x3, y3]});
+                return;
+              }
+
+              if (m_cusp_limit != 0.0) {
+                if (da1 > m_cusp_limit) {
+                  result.push({type:'L', values:[x2, y2]});
+                  return;
+                }
+              }
+            }
+          }
+          else if (d3 > curve_collinearity_epsilon) {
+            if (d3 * d3 <= m_distance_tolerance * (dx*dx + dy*dy)) {
+              if (m_angle_tolerance < curve_angle_tolerance_epsilon) {
+                result.push({type:'L', values:[x1234, y1234]});
+                return;
+              }
+
+              da1 = Math.abs(Math.atan2(y4 - y3, x4 - x3) - Math.atan2(y3 - y2, x3 - x2));
+              if (da1 >= Math.PI) da1 = 2*Math.PI - da1;
+
+              if (da1 < m_angle_tolerance) {
+                result.push(
+                  {type:'L', values:[x2, y2]},
+                  {type:'L', values:[x3, y3]});
+                return;
+              }
+
+              if (m_cusp_limit != 0.0) {
+                if (da1 > m_cusp_limit) {
+                  result.push({type:'L', values:[x3, y3]});
+                  return;
+                }
+              }
+            }
+          }
+          else {
+            // Collinear case
+            dx = x1234 - (x1 + x4) / 2;
+            dy = y1234 - (y1 + y4) / 2;
+            if (dx*dx + dy*dy <= m_distance_tolerance) {
+              result.push({type:'L', values:[x1234, y1234]});
+              return;
+            }
+          }
+        }
+      }
+
+      recursive_bezier(x1, y1, x12, y12, x123, y123, x1234, y1234, level + 1); 
+      recursive_bezier(x1234, y1234, x234, y234, x34, y34, x4, y4, level + 1); 
+    }
+    for (var i = 0; i < pathData.length; i++) {
+      if (pathData[i].type === 'C') {
+        var c = pathData[i].values;
+        recursive_bezier(lastPoint[0], lastPoint[1], c[0], c[1], c[2], c[3], c[4], c[5], 0);
+        lastPoint = c.slice(-2);
+        result.push({type:'L', lastPoint});
+      }
+      else {
+        result.push(pathData[i]);
+        lastPoint = pathData[i].values.slice(-2);
+      }
+    }
+    return result;
+  }
 
   return {
     parse: parsePathDataString,
     absolutize: absolutizePathData,
     reduce: reducePathData,
+    linearize: linearizePathData,
   };
 
 });
