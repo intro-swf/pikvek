@@ -1013,7 +1013,7 @@ define(function() {
         var c = pathData[i].values;
         recursive_bezier(lastPoint[0], lastPoint[1], c[0], c[1], c[2], c[3], c[4], c[5], 0);
         lastPoint = c.slice(-2);
-        result.push({type:'L', lastPoint});
+        result.push({type:'L', values:lastPoint});
       }
       else {
         result.push(pathData[i]);
