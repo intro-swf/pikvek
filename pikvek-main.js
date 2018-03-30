@@ -46,7 +46,7 @@ require([
               loop = true;
             }
             else {
-              points.push({x:path[i].values[0], y:path[i].values[1]});
+              points.push({x:Math.round(path[i].values[0]), y:Math.round(path[i].values[1])});
             }
           }
           if (node.hasAttribute('fill')) {
