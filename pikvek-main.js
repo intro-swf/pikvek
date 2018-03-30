@@ -29,6 +29,8 @@ require([
     ctx.clearRect(0, 0, rendercanvas.width, rendercanvas.height);
     for (var node = doc.documentElement.firstChild; node; node = node.nextSibling) {
       if (node.nodeType !== 1) continue;
+      ctx.save();
+      ctx.translate(node.getAttribute('x') || 0, node.getAttribute('y') || 0);
       switch (node.nodeName) {
         case 'shape':
           var path = pathData.parse(node.getAttribute('path') || '');
@@ -57,6 +59,7 @@ require([
           console.warn('pikvek: unknown element ' + node.nodeName);
           break;
       }
+      ctx.restore();
     }
   };
   renderbutton.disabled = false;
