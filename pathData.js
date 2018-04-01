@@ -309,6 +309,22 @@ define(function() {
       return flag;
     }
   };
+  
+  function* eachPathSegment(string) {
+    var source = new Source(string);
+    var pathData = [];
+
+    if (source.initialCommandIsMoveTo()) {
+      while (source.hasMoreData()) {
+        var pathSeg = source.parseSegment();
+
+        if (pathSeg === null) {
+          break;
+        }
+        yield pathSeg;
+      }
+    }
+  }
 
   function parsePathDataString(string) {
     if (!string || string.length === 0) return [];
@@ -472,7 +488,220 @@ define(function() {
       return curves;
     }
   };
+  
+  function* eachPathSegmentAbsolute(src) {
+    if (typeof src === 'string') src = eachPathSegment(src);
+    
+    var currentX = null;
+    var currentY = null;
 
+    var subpathX = null;
+    var subpathY = null;
+
+    for (var seg of src) {
+      var type = seg.type;
+
+      if (type === "M") {
+        var x = seg.values[0];
+        var y = seg.values[1];
+
+        yield {type: "M", values: [x, y]};
+
+        subpathX = x;
+        subpathY = y;
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (type === "m") {
+        var x = currentX + seg.values[0];
+        var y = currentY + seg.values[1];
+
+        yield {type: "M", values: [x, y]};
+
+        subpathX = x;
+        subpathY = y;
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (type === "L") {
+        var x = seg.values[0];
+        var y = seg.values[1];
+
+        yield {type: "L", values: [x, y]};
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (type === "l") {
+        var x = currentX + seg.values[0];
+        var y = currentY + seg.values[1];
+
+        yield {type: "L", values: [x, y]};
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (type === "C") {
+        var x1 = seg.values[0];
+        var y1 = seg.values[1];
+        var x2 = seg.values[2];
+        var y2 = seg.values[3];
+        var x = seg.values[4];
+        var y = seg.values[5];
+
+        yield {type: "C", values: [x1, y1, x2, y2, x, y]};
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (type === "c") {
+        var x1 = currentX + seg.values[0];
+        var y1 = currentY + seg.values[1];
+        var x2 = currentX + seg.values[2];
+        var y2 = currentY + seg.values[3];
+        var x = currentX + seg.values[4];
+        var y = currentY + seg.values[5];
+
+        yield {type: "C", values: [x1, y1, x2, y2, x, y]};
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (type === "Q") {
+        var x1 = seg.values[0];
+        var y1 = seg.values[1];
+        var x = seg.values[2];
+        var y = seg.values[3];
+
+        yield {type: "Q", values: [x1, y1, x, y]};
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (type === "q") {
+        var x1 = currentX + seg.values[0];
+        var y1 = currentY + seg.values[1];
+        var x = currentX + seg.values[2];
+        var y = currentY + seg.values[3];
+
+        yield {type: "Q", values: [x1, y1, x, y]};
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (type === "A") {
+        var x = seg.values[5];
+        var y = seg.values[6];
+
+        yield {
+          type: "A",
+          values: [seg.values[0], seg.values[1], seg.values[2], seg.values[3], seg.values[4], x, y]
+        };
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (type === "a") {
+        var x = currentX + seg.values[5];
+        var y = currentY + seg.values[6];
+
+        yield {
+          type: "A",
+          values: [seg.values[0], seg.values[1], seg.values[2], seg.values[3], seg.values[4], x, y]
+        };
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (type === "H") {
+        var x = seg.values[0];
+        yield {type: "H", values: [x]};
+        currentX = x;
+      }
+
+      else if (type === "h") {
+        var x = currentX + seg.values[0];
+        yield {type: "H", values: [x]};
+        currentX = x;
+      }
+
+      else if (type === "V") {
+        var y = seg.values[0];
+        yield {type: "V", values: [y]};
+        currentY = y;
+      }
+
+      else if (type === "v") {
+        var y = currentY + seg.values[0];
+        yield {type: "V", values: [y]};
+        currentY = y;
+      }
+
+      else if (type === "S") {
+        var x2 = seg.values[0];
+        var y2 = seg.values[1];
+        var x = seg.values[2];
+        var y = seg.values[3];
+
+        yield {type: "S", values: [x2, y2, x, y]};
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (type === "s") {
+        var x2 = currentX + seg.values[0];
+        var y2 = currentY + seg.values[1];
+        var x = currentX + seg.values[2];
+        var y = currentY + seg.values[3];
+
+        yield {type: "S", values: [x2, y2, x, y]};
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (type === "T") {
+        var x = seg.values[0];
+        var y = seg.values[1]
+
+        yield {type: "T", values: [x, y]};
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (type === "t") {
+        var x = currentX + seg.values[0];
+        var y = currentY + seg.values[1]
+
+        yield {type: "T", values: [x, y]};
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (type === "Z" || type === "z") {
+        yield {type: "Z", values: []};
+
+        currentX = subpathX;
+        currentY = subpathY;
+      }
+    }
+  }
+  
   function absolutizePathData(pathData) {
     var absolutizedPathData = [];
 
@@ -686,6 +915,192 @@ define(function() {
     });
 
     return absolutizedPathData;
+  }
+  
+  function* eachPathSegmentReduced(src) {
+    if (typeof src === 'string') src = eachPathSegment(src);
+    
+    var lastType = null;
+
+    var lastControlX = null;
+    var lastControlY = null;
+
+    var currentX = null;
+    var currentY = null;
+
+    var subpathX = null;
+    var subpathY = null;
+    
+    for (var seg of src) {
+      if (seg.type === "M") {
+        var x = seg.values[0];
+        var y = seg.values[1];
+
+        yield {type: "M", values: [x, y]};
+
+        subpathX = x;
+        subpathY = y;
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (seg.type === "C") {
+        var x1 = seg.values[0];
+        var y1 = seg.values[1];
+        var x2 = seg.values[2];
+        var y2 = seg.values[3];
+        var x = seg.values[4];
+        var y = seg.values[5];
+
+        yield {type: "C", values: [x1, y1, x2, y2, x, y]};
+
+        lastControlX = x2;
+        lastControlY = y2;
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (seg.type === "L") {
+        var x = seg.values[0];
+        var y = seg.values[1];
+
+        yield {type: "L", values: [x, y]};
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (seg.type === "H") {
+        var x = seg.values[0];
+
+        yield {type: "L", values: [x, currentY]};
+
+        currentX = x;
+      }
+
+      else if (seg.type === "V") {
+        var y = seg.values[0];
+
+        yield {type: "L", values: [currentX, y]};
+
+        currentY = y;
+      }
+
+      else if (seg.type === "S") {
+        var x2 = seg.values[0];
+        var y2 = seg.values[1];
+        var x = seg.values[2];
+        var y = seg.values[3];
+
+        var cx1, cy1;
+
+        if (lastType === "C" || lastType === "S") {
+          cx1 = currentX + (currentX - lastControlX);
+          cy1 = currentY + (currentY - lastControlY);
+        }
+        else {
+          cx1 = currentX;
+          cy1 = currentY;
+        }
+
+        yield {type: "C", values: [cx1, cy1, x2, y2, x, y]};
+
+        lastControlX = x2;
+        lastControlY = y2;
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (seg.type === "T") {
+        var x = seg.values[0];
+        var y = seg.values[1];
+
+        var x1, y1;
+
+        if (lastType === "Q" || lastType === "T") {
+          x1 = currentX + (currentX - lastControlX);
+          y1 = currentY + (currentY - lastControlY);
+        }
+        else {
+          x1 = currentX;
+          y1 = currentY;
+        }
+
+        var cx1 = currentX + 2 * (x1 - currentX) / 3;
+        var cy1 = currentY + 2 * (y1 - currentY) / 3;
+        var cx2 = x + 2 * (x1 - x) / 3;
+        var cy2 = y + 2 * (y1 - y) / 3;
+
+        yield {type: "C", values: [cx1, cy1, cx2, cy2, x, y]};
+
+        lastControlX = x1;
+        lastControlY = y1;
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (seg.type === "Q") {
+        var x1 = seg.values[0];
+        var y1 = seg.values[1];
+        var x = seg.values[2];
+        var y = seg.values[3];
+
+        var cx1 = currentX + 2 * (x1 - currentX) / 3;
+        var cy1 = currentY + 2 * (y1 - currentY) / 3;
+        var cx2 = x + 2 * (x1 - x) / 3;
+        var cy2 = y + 2 * (y1 - y) / 3;
+
+        yield {type: "C", values: [cx1, cy1, cx2, cy2, x, y]};
+
+        lastControlX = x1;
+        lastControlY = y1;
+
+        currentX = x;
+        currentY = y;
+      }
+
+      else if (seg.type === "A") {
+        var r1 = Math.abs(seg.values[0]);
+        var r2 = Math.abs(seg.values[1]);
+        var angle = seg.values[2];
+        var largeArcFlag = seg.values[3];
+        var sweepFlag = seg.values[4];
+        var x = seg.values[5];
+        var y = seg.values[6];
+
+        if (r1 === 0 || r2 === 0) {
+          yield {type: "C", values: [currentX, currentY, x, y, x, y]};
+
+          currentX = x;
+          currentY = y;
+        }
+        else {
+          if (currentX !== x || currentY !== y) {
+            var curves = arcToCubicCurves(currentX, currentY, x, y, r1, r2, angle, largeArcFlag, sweepFlag);
+            
+            for (var curve of curves) {
+              yield {type:'C', values:curve};
+            }
+
+            currentX = x;
+            currentY = y;
+          }
+        }
+      }
+
+      else if (seg.type === "Z") {
+        yield seg;
+
+        currentX = subpathX;
+        currentY = subpathY;
+      }
+
+      lastType = seg.type;
+    }
   }
 
   function reducePathData(pathData) {
