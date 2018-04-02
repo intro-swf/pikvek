@@ -167,7 +167,9 @@ define(function() {
         }
       }
       for (var i_p2 = 1; i_p2 < points.length; i_p2++) {
+        ctx.rect(points[i_p2-1].x, points[i_p2-1].y, 1, 1);
         edge(points[i_p2-1], points[i_p2]);
+        ctx.rect(points[i_p2].x, points[i_p2].y, 1, 1);
       }
       ctx.fill();
     },
