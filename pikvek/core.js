@@ -13,7 +13,7 @@ define(function() {
           var D = 2*dy - dx;
           var y = p0.y;
           for (var x = p0.x; x < p1.x; x++) {
-            ctx.rect(x, p1.y, 1, y - p1.y);
+            ctx.rect(x, y, 1, p0.y - y);
             if (D > 0) {
               y += yi;
               h -= yi;
@@ -29,7 +29,7 @@ define(function() {
           var D = 2*dy - dx;
           var y = p0.y;
           for (var x = p0.x; x < p1.x; x++) {
-            ctx.rect(x, y, 1, p1.y - y);
+            ctx.rect(x, p0.y, 1, y - p0.y);
             if (D > 0) {
               y += yi;
               h -= yi;
