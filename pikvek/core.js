@@ -23,7 +23,7 @@ define(function() {
           }
           ctx.rect(p1.x, p1.y, 10000, -dy);
         }
-s        else {
+        else {
           var yi = 1;
           var h = dy;
           var D = 2*dy - dx;
