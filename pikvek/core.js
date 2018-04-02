@@ -6,28 +6,37 @@ define(function() {
     fill: function(ctx, points) {
       function plotLineLow(p0, p1) {
         var dx = p1.x - p0.x, dy = p1.y - p0.y;
-        var yi = 1;
-        var h = dy;
         if (dy < 0) {
-          yi = -1;
+          var yi = -1;
           dy = -dy;
-          h = 0;
-        }
-        var D = 2*dy - dx;
-        var y = p0.y;
-        for (var x = p0.x; x < p1.x; x++) {
-          ctx.rect(x, y, 1, h);
-          if (D > 0) {
-            y += yi;
-            h -= yi;
-            D -= 2*dx;
+          var h = 0;
+          var D = 2*dy - dx;
+          var y = p0.y;
+          for (var x = p0.x; x < p1.x; x++) {
+            ctx.rect(x, p1.y, 1, y - p1.y);
+            if (D > 0) {
+              y += yi;
+              h -= yi;
+              D -= 2*dx;
+            }
+            D += 2*dy;
           }
-          D += 2*dy;
-        }
-        if (dy < 0) {
           ctx.rect(p1.x, p1.y, 10000, -dy);
         }
-        else {
+s        else {
+          var yi = 1;
+          var h = dy;
+          var D = 2*dy - dx;
+          var y = p0.y;
+          for (var x = p0.x; x < p1.x; x++) {
+            ctx.rect(x, y, 1, p1.y - y);
+            if (D > 0) {
+              y += yi;
+              h -= yi;
+              D -= 2*dx;
+            }
+            D += 2*dy;
+          }
           ctx.rect(p1.x, p0.y, 10000, dy);
         }
       }
@@ -39,24 +48,29 @@ define(function() {
         if (dx < 0) {
           xi = -1;
           dx = -dx;
-          w = 0;
-        }
-        var D = 2*dx - dy;
-        var x = p0.x;
-        for (var y = p0.y; y < p1.y; y++) {
-          ctx.rect(x, y, w, 1);
-          if (D > 0) {
-            x += xi;
-            w -= xi;
-            D -= 2*dy;
+          var D = 2*dx - dy;
+          var x = p0.x;
+          for (var y = p0.y; y < p1.y; y++) {
+            ctx.rect(x, y, 10000, 1);
+            if (D > 0) {
+              x += xi;
+              D -= 2*dy;
+            }
+            D += 2*dx;
           }
-          D += 2*dx;
-        }
-        if (dx < 0) {
-          ctx.rect(p1.x, p0.y, 10000, dy);
         }
         else {
-          ctx.rect(p0.x, p0.y, 10000, dy);
+          var D = 2*dx - dy;
+          var x = p0.x;
+          for (var y = p0.y; y < p1.y; y++) {
+            ctx.rect(x, y, 10000, 1);
+            if (D > 0) {
+              x += xi;
+              w -= xi;
+              D -= 2*dy;
+            }
+            D += 2*dx;
+          }
         }
       }
 
