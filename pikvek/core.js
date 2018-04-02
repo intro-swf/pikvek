@@ -5,7 +5,8 @@ define(function() {
   var core = {
     fill: function(ctx, points) {
       function plotLineLow(p0, p1) {
-        var dx = p1.x - p0.x, dy = p1.y - p0.y;
+        var dx = p1.x - p0.x,
+            dy = p1.y - p0.y;
         if (dy < 0) {
           var yi = -1;
           dy = -dy;
@@ -21,7 +22,7 @@ define(function() {
             }
             D += 2*dy;
           }
-          ctx.rect(p1.x, p1.y, 10000, -dy);
+          ctx.rect(p1.x, p1.y, 10000, dy);
         }
         else {
           var yi = 1;
