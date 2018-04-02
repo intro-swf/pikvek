@@ -1294,7 +1294,7 @@ define(function() {
   const curve_collinearity_epsilon = 1e-30;
   const m_angle_tolerance = 10*Math.PI/180.0;
   const curve_angle_tolerance_epsilon = 0.01;
-  const m_distance_tolerance = 0.5;
+  const m_distance_tolerance = 1;
   const m_cusp_limit = 0.0;
 
   function linearizePathData(pathData) {
