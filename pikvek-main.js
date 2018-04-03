@@ -55,6 +55,7 @@ require([
               ctx.save();
               ctx.clip('evenodd');
               for (var childNode = node.firstChild; childNode; childNode = childNode.nextSibling) {
+                if (childNode.type !== 1) continue;
                 draw(childNode);
               }
               ctx.restore();
