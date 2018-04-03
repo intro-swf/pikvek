@@ -27,8 +27,7 @@ require([
     rendercanvas.height = doc.documentElement.getAttribute('height') || 150;
     var ctx = rendercanvas.getContext('2d');
     ctx.clearRect(0, 0, rendercanvas.width, rendercanvas.height);
-    for (var node = doc.documentElement.firstChild; node; node = node.nextSibling) {
-      if (node.nodeType !== 1) continue;
+    function draw(node) {
       ctx.save();
       ctx.translate(
         node.getAttribute('x') || 0,
@@ -52,6 +51,14 @@ require([
           if (node.hasAttribute('fill')) {
             ctx.fillStyle = node.getAttribute('fill');
             core.fill(ctx, points);
+            if (node.childNodes.length > 0) {
+              ctx.save();
+              ctx.clip('evenodd');
+              for (var childNode = node.firstChild; childNode; childNode = childNode.nextSibling) {
+                draw(childNode);
+              }
+              ctx.restore();
+            }
           }
           if (node.hasAttribute('edges')) {
             ctx.fillStyle = node.getAttribute('edges');
@@ -63,6 +70,10 @@ require([
           break;
       }
       ctx.restore();
+    }
+    for (var node = doc.documentElement.firstChild; node; node = node.nextSibling) {
+      if (node.nodeType !== 1) continue;
+      draw(node);
     }
   };
   renderbutton.disabled = false;
