@@ -55,8 +55,7 @@ require([
               ctx.save();
               ctx.clip('evenodd');
               for (var childNode = node.firstChild; childNode; childNode = childNode.nextSibling) {
-                if (childNode.type !== 1) continue;
-                draw(childNode);
+                if (childNode.nodeType === 1) draw(childNode);
               }
               ctx.restore();
             }
@@ -73,8 +72,7 @@ require([
       ctx.restore();
     }
     for (var node = doc.documentElement.firstChild; node; node = node.nextSibling) {
-      if (node.nodeType !== 1) continue;
-      draw(node);
+      if (node.nodeType === 1) draw(node);
     }
   };
   renderbutton.disabled = false;
