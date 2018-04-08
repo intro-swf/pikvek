@@ -66,7 +66,7 @@ require([
           }
           break;
         case 'perspective':
-          var srcBox = node.getAttribute('src-box').match(/^\s*(-?\d+)\s+(-?\d+)\s+(-?\d+)\s+(-?\d+)\s*/$);
+          var srcBox = node.getAttribute('src-box').match(/^\s*(-?\d+)\s+(-?\d+)\s+(-?\d+)\s+(-?\d+)\s*$/);
           if (!srcBox) {
             throw new Error('perspective must have valid src-box');
           }
