@@ -74,14 +74,12 @@ require([
           var destPath = pathData.parse(node.getAttribute('dest-path'));
           destPath = pathData.absolutize(destPath);
           destPath = pathData.reduce(destPath);
-          if (destPath.length !== 4
+          if (destPath.length !== 5
             || destPath[0].type !== 'M'
             || destPath[1].type !== 'L'
             || destPath[2].type !== 'L'
-            || !(destPath[3].type === 'Z' || (
-              destPath[3].type === 'L'
-              && destPath[3].values.join(',') === destPath[0].values.join(',')
-            ))
+            || destPath[3].type !== 'L'
+            || destPath[4].type === 'Z'
           ) {
             throw new Error('perspective must have valid dest-path');
           }
