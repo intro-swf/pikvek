@@ -38,6 +38,15 @@ require([
     };
   }
   
+  function pointLineDistanceSq(lineX1, lineY1, lineX2, lineY2, pointX, pointY) {
+    const lineLengthSq = (lineX2 - lineX1)*(lineX2 - lineX1) + (lineY2 - lineY1)*(lineY2 - lineY1);
+    if (lineLengthSq === 0) return NaN;
+    const t = ((pointX - lineX1) * (lineX2 - lineX1) + (pointY - lineY1) * (lineY2 - lineY1));
+    const meetX = lineX1 + t * (lineX2 - lineX1);
+    const meetY = lineY1 + t * (lineY2 - lineY1);
+    return (meetX - pointX)*(meetX - pointX) + (meetY - pointY)*(meetY - pointY);
+  }
+  
   renderbutton.onclick = function() {
     var doc = parser.parseFromString(svgtext.value, 'application/xml');
     rendercanvas.width = doc.documentElement.getAttribute('width') || 300;
@@ -105,9 +114,14 @@ require([
               cx = destPath[2].values[0], cy = destPath[2].values[1],
               dx = destPath[3].values[0], dy = destPath[3].values[1];
           console.log(srcBox, destPath);
-          var vanishingPoint1 = getCrossingPoint(ax,ay,bx,by,dx,dy,cx,cy);
-          var vanishingPoint2 = getCrossingPoint(ax,ay,dx,dy,bx,by,cx,cy);
-          console.log(vanishingPoint1, vanishingPoint2);
+          var vanish1 = getCrossingPoint(ax,ay,bx,by,dx,dy,cx,cy);
+          var vanish2 = getCrossingPoint(ax,ay,dx,dy,bx,by,cx,cy);
+          console.log(vanish1, vanish2);
+          var aDist = pointLineDistanceSq(ax,ay, vanish1.x, vanish1.y, vanish2.x, vanish2.y);
+          var bDist = pointLineDistanceSq(bx,by, vanish1.x, vanish1.y, vanish2.x, vanish2.y);
+          var cDist = pointLineDistanceSq(cx,cy, vanish1.x, vanish1.y, vanish2.x, vanish2.y);
+          var dDist = pointLineDistanceSq(dx,dy, vanish1.x, vanish1.y, vanish2.x, vanish2.y);
+          console.log(aDist, bDist, cDist, dDist);
           break;
         default:
           console.warn('pikvek: unknown element ' + node.nodeName);
