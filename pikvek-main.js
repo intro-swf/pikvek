@@ -79,7 +79,7 @@ require([
             || destPath[1].type !== 'L'
             || destPath[2].type !== 'L'
             || destPath[3].type !== 'L'
-            || destPath[4].type === 'Z'
+            || destPath[4].type !== 'Z'
           ) {
             throw new Error('perspective must have valid dest-path');
           }
