@@ -38,7 +38,7 @@ require([
     };
   }
   
-  function pointLineDistanceSq(lineX1, lineY1, lineX2, lineY2, pointX, pointY) {
+  function pointLineDistanceSq(pointX, pointY, lineX1, lineY1, lineX2, lineY2) {
     const lineLengthSq = (lineX2 - lineX1)*(lineX2 - lineX1) + (lineY2 - lineY1)*(lineY2 - lineY1);
     if (lineLengthSq === 0) return NaN;
     const t = ((pointX - lineX1) * (lineX2 - lineX1) + (pointY - lineY1) * (lineY2 - lineY1)) / lineLengthSq;
