@@ -21,6 +21,23 @@ require([
   
   var parser = new DOMParser;
   
+  function getCrossingPoint(ax1,ay1, ax2,ay2, bx1,by1, bx2,by2) {
+    var a1 = ay2 - ay1;
+    var b1 = ax1 - ax2;
+    var c1 = a1*ax1 + b1*ay1;
+
+    var a2 = by2 - by2;
+    var b2 = bx1 - bx2;
+    var c2 = a2*bx1 + b2*by1;
+
+    var determinant = a1*b2 - a2*b1;
+
+    return (determinant === 0) ? 'parallel' : {
+      x: (b2*c1 - b1*c2)/determinant,
+      y: (a1*c2 - a2*c1)/determinant,
+    };
+  }
+  
   renderbutton.onclick = function() {
     var doc = parser.parseFromString(svgtext.value, 'application/xml');
     rendercanvas.width = doc.documentElement.getAttribute('width') || 300;
@@ -83,7 +100,14 @@ require([
           ) {
             throw new Error('perspective must have valid dest-path');
           }
+          var ax = destPath[0].values[0], ay = destPath[0].values[1],
+              bx = destPath[1].values[0], by = destPath[1].values[1],
+              cx = destPath[2].values[0], cy = destPath[2].values[1],
+              dx = destPath[3].values[0], dy = destPath[3].values[1];
           console.log(srcBox, destPath);
+          var vanishingPoint1 = getCrossingPoint(ax,bx, dx,cx);
+          var vanishingPoint2 = getCrossingPoint(ax,dx, bx,cx);
+          console.log(vanishingPoint1, vanishingPoint2);
           break;
         default:
           console.warn('pikvek: unknown element ' + node.nodeName);
