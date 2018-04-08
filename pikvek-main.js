@@ -65,6 +65,28 @@ require([
             core.lines(ctx, points, loop);
           }
           break;
+        case 'perspective':
+          var srcBox = node.getAttribute('src-box').match(/^\s*(-?\d+)\s+(-?\d+)\s+(-?\d+)\s+(-?\d+)\s*/$);
+          if (!srcBox) {
+            throw new Error('perspective must have valid src-box');
+          }
+          srcBox = {x:+srcBox[1], y:+srcBox[2], width:+srcBox[3], height:+srcBox[4]};
+          var destPath = pathData.parse(node.getAttribute('dest-path'));
+          destPath = pathData.absolutize(destPath);
+          destPath = pathData.reduce(destPath);
+          if (destPath.length !== 4
+            || destPath[0].type !== 'M'
+            || destPath[1].type !== 'L'
+            || destPath[2].type !== 'L'
+            || !(destPath[3].type === 'Z' || (
+              destPath[3].type === 'L'
+              && destPath[3].values.join(',') === destPath[0].values.join(',')
+            ))
+          ) {
+            throw new Error('perspective must have valid dest-path');
+          }
+          console.log(srcBox, destPath);
+          break;
         default:
           console.warn('pikvek: unknown element ' + node.nodeName);
           break;
