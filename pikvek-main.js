@@ -105,8 +105,8 @@ require([
               cx = destPath[2].values[0], cy = destPath[2].values[1],
               dx = destPath[3].values[0], dy = destPath[3].values[1];
           console.log(srcBox, destPath);
-          var vanishingPoint1 = getCrossingPoint(ax,bx, dx,cx);
-          var vanishingPoint2 = getCrossingPoint(ax,dx, bx,cx);
+          var vanishingPoint1 = getCrossingPoint(ax,ay,bx,by,dx,dy,cx,cy);
+          var vanishingPoint2 = getCrossingPoint(ax,ay,dx,dy,bx,by,cx,cy);
           console.log(vanishingPoint1, vanishingPoint2);
           break;
         default:
