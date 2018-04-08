@@ -26,7 +26,7 @@ require([
     var b1 = ax1 - ax2;
     var c1 = a1*ax1 + b1*ay1;
 
-    var a2 = by2 - by2;
+    var a2 = by2 - by1;
     var b2 = bx1 - bx2;
     var c2 = a2*bx1 + b2*by1;
 
