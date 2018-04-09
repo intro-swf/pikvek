@@ -135,8 +135,8 @@ require([
           }
           var oppositeMidX2 = oppositeMidX + (vanish2.x - vanish1.x);
           var oppositeMidY2 = oppositeMidY + (vanish2.y - vanish1.y);
-          var opposite1 = getCrossingPoint(vanish2.x, vanish2.y, ax, ay, oppositeMidX,oppositeMidY, oppositeMidX2,oppositeMidY2);
-          var opposite2 = getCrossingPoint(vanish1.x, vanish1.y, cx, cy, oppositeMidX,oppositeMidY, oppositeMidX2,oppositeMidY2);
+          var opposite1 = getCrossingPoint(vanish1.x, vanish1.y, ax, ay, oppositeMidX,oppositeMidY, oppositeMidX2,oppositeMidY2);
+          var opposite2 = getCrossingPoint(vanish2.x, vanish2.y, cx, cy, oppositeMidX,oppositeMidY, oppositeMidX2,oppositeMidY2);
           console.log(opposite1, opposite2);
           break;
         default:
