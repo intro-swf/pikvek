@@ -113,15 +113,31 @@ require([
               bx = destPath[1].values[0], by = destPath[1].values[1],
               cx = destPath[2].values[0], cy = destPath[2].values[1],
               dx = destPath[3].values[0], dy = destPath[3].values[1];
-          console.log(srcBox, destPath);
           var vanish1 = getCrossingPoint(ax,ay,bx,by,dx,dy,cx,cy);
           var vanish2 = getCrossingPoint(ax,ay,dx,dy,bx,by,cx,cy);
-          console.log(vanish1, vanish2);
           var aDist = pointLineDistanceSq(ax,ay, vanish1.x, vanish1.y, vanish2.x, vanish2.y);
           var bDist = pointLineDistanceSq(bx,by, vanish1.x, vanish1.y, vanish2.x, vanish2.y);
           var cDist = pointLineDistanceSq(cx,cy, vanish1.x, vanish1.y, vanish2.x, vanish2.y);
           var dDist = pointLineDistanceSq(dx,dy, vanish1.x, vanish1.y, vanish2.x, vanish2.y);
-          console.log(aDist, bDist, cDist, dDist);
+          var maxDist = Math.max(aDist, bDist, cDist, dDist);
+          var oppositeMidX, oppositeMidY;
+          if (aDist === maxDist) {
+            oppositeMidX = ax; oppositeMidY = ay;
+          }
+          else if (bDist === maxDist) {
+            oppositeMidX = bx; oppositeMidY = by;
+          }
+          else if (cDist === maxDist) {
+            oppositeMidX = cx; oppositeMidY = cy;
+          }
+          else /* dDist === maxDist */ {
+            oppositeMidX = dx; oppositeMidY = dy;
+          }
+          var oppositeMidX2 = oppositeMidX + (vanish2.x - vanish1.x);
+          var oppositeMidY2 = oppositeMidY + (vanish2.y - vanish1.y);
+          var opposite1 = getCrossingPoint(vanish2.x, vanish2.y, ax, ay, oppositeMidX,oppositeMidY, oppositeMidX2,oppositeMidY2);
+          var opposite2 = getCrossingPoint(vanish1.x, vanish1.y, cx, cy, oppositeMidX,oppositeMidY, oppositeMidX2,oppositeMidY2);
+          console.log(opposite1, opposite2);
           break;
         default:
           console.warn('pikvek: unknown element ' + node.nodeName);
