@@ -142,6 +142,12 @@ require([
           const yBaseX = oppositeMidX, yBaseY = oppositeMidY;
           const yOffX = (opposite2.x - yBaseX) / srcBox.width, yOffY = (opposite2.y - yBaseY) / srcBox.height;
           console.log(xBaseX,xBaseY, xOffX,xOffY, yBaseX,yBaseY, yOffX,yOffY);
+          function transform(point) {
+            return getCrossingPoint(
+              vanish1.x, vanish1.y, xBaseX + point.x * xOffX, xBaseY + point.y * xOffY,
+              vanish2.x, vanish2.y, yBaseX + point.x * yOffX, yBaseY + point.y * yOffY);
+          }
+          window.transformPoint = transform;
           break;
         default:
           console.warn('pikvek: unknown element ' + node.nodeName);
