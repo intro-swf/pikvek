@@ -144,8 +144,8 @@ require([
           console.log(xBaseX,xBaseY, xOffX,xOffY, yBaseX,yBaseY, yOffX,yOffY);
           function transform(point) {
             return getCrossingPoint(
-              vanish1.x, vanish1.y, xBaseX + point.x * xOffX, xBaseY + point.y * xOffY,
-              vanish2.x, vanish2.y, yBaseX + point.x * yOffX, yBaseY + point.y * yOffY);
+              vanish1.x, vanish1.y, xBaseX + point.x * xOffX, xBaseY + point.x * xOffY,
+              vanish2.x, vanish2.y, yBaseX + point.y * yOffX, yBaseY + point.y * yOffY);
           }
           window.transformPoint = transform;
           break;
