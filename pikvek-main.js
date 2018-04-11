@@ -147,7 +147,15 @@ require([
               vanish2.x, vanish2.y, xBaseX + point.x * xOffX, xBaseY + point.x * xOffY,
               vanish1.x, vanish1.y, yBaseX + point.y * yOffX, yBaseY + point.y * yOffY);
           }
+          function reverseTransform(point) {
+            var project1 = getCrossingPoint(vanish1.x, vanish1.y, point.x, point.y, opposite1.x, opposite1.y, opposite2.x, opposite2.y);
+            var project2 = getCrossingPoint(vanish2.x, vanish2.y, point.x, point.y, opposite1.x, opposite1.y, opposite2.x, opposite2.y);
+            var xd = Math.sqrt(Math.pow(project2.x - oppositeMidX, 2) + Math.pow(project2.y - oppositeMidY, 2));
+            var yd = Math.sqrt(Math.pow(project1.x - opposite1.x, 2) + Math.pow(project1.y - opposite1.y, 2));
+            return {x:xd, y:yd};
+          }
           window.transformPoint = transform;
+          window.transformPointReverse = reverseTransform;
           break;
         default:
           console.warn('pikvek: unknown element ' + node.nodeName);
