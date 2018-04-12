@@ -158,6 +158,13 @@ require([
           }
           window.transformPoint = transform;
           window.transformPointReverse = reverseTransform;
+          ctx.fillStyle = '#000';
+          for (var i = 0; i <= 10; i++) {
+            var xi = srcBox.x + i*srcBox.width/10;
+            var yi = srcBox.y + i*srcBox.height/10;
+            core.lines(ctx, [transform(xi, srcBox.y), transform(xi, srcBox.y + srcBox.height)], false);
+            core.lines(ctx, [transform(srcBox.x, yi), transform(srcBox.x + srcBox.width, yi)], false);
+          }
           break;
         default:
           console.warn('pikvek: unknown element ' + node.nodeName);
