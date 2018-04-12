@@ -159,11 +159,20 @@ require([
           window.transformPoint = transform;
           window.transformPointReverse = reverseTransform;
           ctx.fillStyle = '#000';
+          function roundPoint(pt) {
+            return {x:Math.round(pt.x), y:Math.round(pt.y)};
+          }
           for (var i = 0; i <= 10; i++) {
             var xi = srcBox.x + i*srcBox.width/10;
             var yi = srcBox.y + i*srcBox.height/10;
-            core.lines(ctx, [transform({x:xi, y:srcBox.y}), transform({x:xi, y:srcBox.y + srcBox.height})], false);
-            core.lines(ctx, [transform({x:srcBox.x, y:yi}), transform({x:srcBox.x + srcBox.width, y:yi})], false);
+            core.lines(ctx, [
+              roundPoint(transform({x:xi, y:srcBox.y})),
+              roundPoint(transform({x:xi, y:srcBox.y + srcBox.height})),
+            ], false);
+            core.lines(ctx, [
+              roundPoint(transform({x:srcBox.x, y:yi})),
+              roundPoint(transform({x:srcBox.x + srcBox.width, y:yi})),
+            ], false);
           }
           break;
         default:
