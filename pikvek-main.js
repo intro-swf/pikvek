@@ -141,6 +141,8 @@ require([
           const xOffX = (opposite2.x - xBaseX) / srcBox.width, xOffY = (opposite2.y - xBaseY) / srcBox.width;
           const yBaseX = opposite1.x, yBaseY = opposite1.y;
           const yOffX = (oppositeMidX - yBaseX) / srcBox.height, yOffY = (oppositeMidY - yBaseY) / srcBox.height;
+          const reverseX = srcBox.width / Math.sqrt(Math.pow(oppositeMidX - xBaseX,2) + Math.pow(oppositeMidY - xBaseY,2));
+          const reverseY = srcBox.height / Math.sqrt(Math.pow(oppositeMidX - yBaseX,2) + Math.pow(oppositeMidY - yBaseY,2));
           console.log(xBaseX,xBaseY, xOffX,xOffY, yBaseX,yBaseY, yOffX,yOffY);
           function transform(point) {
             return getCrossingPoint(
@@ -150,8 +152,8 @@ require([
           function reverseTransform(point) {
             var project1 = getCrossingPoint(vanish1.x, vanish1.y, point.x, point.y, opposite1.x, opposite1.y, opposite2.x, opposite2.y);
             var project2 = getCrossingPoint(vanish2.x, vanish2.y, point.x, point.y, opposite1.x, opposite1.y, opposite2.x, opposite2.y);
-            var xd = Math.sqrt(Math.pow(project2.x - oppositeMidX, 2) + Math.pow(project2.y - oppositeMidY, 2));
-            var yd = Math.sqrt(Math.pow(project1.x - opposite1.x, 2) + Math.pow(project1.y - opposite1.y, 2));
+            var xd = Math.sqrt(Math.pow(project2.x - oppositeMidX, 2) + Math.pow(project2.y - oppositeMidY, 2)) * reverseX;
+            var yd = Math.sqrt(Math.pow(project1.x - opposite1.x, 2) + Math.pow(project1.y - opposite1.y, 2)) * reverseY;
             return {x:xd, y:yd};
           }
           window.transformPoint = transform;
