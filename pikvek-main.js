@@ -141,7 +141,7 @@ require([
           const xOffX = (opposite2.x - xBaseX) / srcBox.width, xOffY = (opposite2.y - xBaseY) / srcBox.width;
           const yBaseX = opposite1.x, yBaseY = opposite1.y;
           const yOffX = (oppositeMidX - yBaseX) / srcBox.height, yOffY = (oppositeMidY - yBaseY) / srcBox.height;
-          const reverseX = srcBox.width / Math.sqrt(Math.pow(oppositeMidX - xBaseX,2) + Math.pow(oppositeMidY - xBaseY,2));
+          const reverseX = srcBox.width / Math.sqrt(Math.pow(opposite2.x - xBaseX,2) + Math.pow(opposite2.y - xBaseY,2));
           const reverseY = srcBox.height / Math.sqrt(Math.pow(oppositeMidX - yBaseX,2) + Math.pow(oppositeMidY - yBaseY,2));
           console.log(xBaseX,xBaseY, xOffX,xOffY, yBaseX,yBaseY, yOffX,yOffY);
           function transform(point) {
