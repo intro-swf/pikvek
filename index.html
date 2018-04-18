@@ -17,7 +17,35 @@
         width: 100%;
         opacity: 90%;
       }
+      .panel {
+        position: absolute;
+      }
+      .panel-header {
+        cursor: hand;
+      }
+      .close-button {
+        cursor: pointer;
+      }
+      .panel-stretcher {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        cursor: nwse-resize;
+      }
     </style>
+    <script type='text/x-html-template' id='panel_template'>
+      <div class='panel'>
+        <div class='panel-header'>
+          <div class='panel-title'>
+            Panel
+          </div>
+          <div class='panel-content'>
+          </div>
+          <button class='close-button'>X</button>
+        </div>
+        <div class='panel-stretcher'>/</div>
+      </div>
+    </script>
   </head>
   <body>
     <textarea id='svgtext'>
