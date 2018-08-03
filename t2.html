@@ -29,7 +29,7 @@
               detailPane = document.getElementById('detailPane');
         perspectivePane.selection = document.querySelector('.perspectivePane .selection');
         perspectivePane.onclick = function(e) {
-          const pt = this.createSVGPoint();
+          var pt = this.createSVGPoint();
           pt.x = e.clientX;
           pt.y = e.clientY;
           pt = pt.matrixTransform(this.getScreenCTM().inverse());
