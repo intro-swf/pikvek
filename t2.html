@@ -27,7 +27,7 @@
         const svgEl = document.createElementNS.bind(document, 'http://www.w3.org/2000/svg');
         const perspectivePane = document.getElementById('perspectivePane'),
               detailPane = document.getElementById('detailPane');
-        perspectivePane.selection = document.querySelector('.perspectivePane .selection');
+        perspectivePane.selection = document.querySelector('#perspectivePane .selection');
         perspectivePane.onclick = function(e) {
           var pt = this.createSVGPoint();
           pt.x = e.clientX;
