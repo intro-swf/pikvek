@@ -35,8 +35,9 @@
           pt = pt.matrixTransform(this.getScreenCTM().inverse());
           const rect = this.getBoundingClientRect();
           const circ = svgEl('circle');
-          circ.setAttribute('x', pt.x);
-          circ.setAttribute('y', pt.y);
+          circ.setAttribute('cx', pt.x);
+          circ.setAttribute('cy', pt.y);
+          circ.setAttribute('r', 5);
           perspectivePane.selection.appendChild(circ);
         };
       });
