@@ -27,18 +27,22 @@
         const svgEl = document.createElementNS.bind(document, 'http://www.w3.org/2000/svg');
         const perspectivePane = document.getElementById('perspectivePane'),
               detailPane = document.getElementById('detailPane');
+        
+        function addPoint(x, y) {
+          const circ = svgEl('circle');
+          circ.setAttribute('cx', x);
+          circ.setAttribute('cy', y);
+          circ.setAttribute('r', 5);
+          perspectivePane.selection.appendChild(circ);
+        }
+        
         perspectivePane.selection = document.querySelector('#perspectivePane .selection');
         perspectivePane.onclick = function(e) {
           var pt = this.createSVGPoint();
           pt.x = e.clientX;
           pt.y = e.clientY;
           pt = pt.matrixTransform(this.getScreenCTM().inverse());
-          const rect = this.getBoundingClientRect();
-          const circ = svgEl('circle');
-          circ.setAttribute('cx', pt.x);
-          circ.setAttribute('cy', pt.y);
-          circ.setAttribute('r', 5);
-          perspectivePane.selection.appendChild(circ);
+          addPoint(pt.x, pt.y);
         };
       });
     </script>
