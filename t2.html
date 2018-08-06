@@ -21,12 +21,64 @@
       .selection {
         fill: #f00;
       }
+      #plane, #horizon {
+        fill: none;
+        stroke: #000;
+        stroke-width: 1;
+      }
     </style>
     <script>
       document.addEventListener('DOMContentLoaded', function(e) {
         const svgEl = document.createElementNS.bind(document, 'http://www.w3.org/2000/svg');
         const perspectivePane = document.getElementById('perspectivePane'),
-              detailPane = document.getElementById('detailPane');
+              detailPane = document.getElementById('detailPane'),
+              horizon = document.getElementById('horizon'),
+              plane = document.getElementById('plane');
+        
+        var points = [];
+        
+        function ccw(A,B,C) {
+          return (C.y-A.y) * (B.x-A.x) > (B.y-A.y) * (C.x-A.x);
+        }
+        
+        function lineSegsCross(a,b, c,d) {
+          return ccw(a,c,d) !== ccw(b,c,d) && ccw(a,b,c) !== ccw(a,b,d);
+        }
+        
+        function isOnLine(l1,l2, p) {
+          return Math.abs((p.y - l1.y)/(p.x - l1.x) - (l2.y - l1.y)/(l2.x - l1.x)) < 0.5;
+        }
+        
+        function getIntersectionPoint(l1a, l1b, l2a, l2b) {
+          const denom = (
+              (l2b.y - l2a.y) * (l1b.x - l1a.x)
+            - (l2b.x - l2a.x) * (l1b.y - l1a.y)
+          );
+          if (denom === 0) return void 0;
+          const ua = (
+              (l2b.x - l2a.x) * (l1a.y - l2a.y)
+            - (l2b.y - l2a.y) * (l1a.x - l2a.x)
+          ) / denom;
+          const ub = (
+              (l1b.x - l1a.x) * (l1a.y - l2a.y)
+            - (l1b.y - l1a.y) * (l1a.x - l2a.x)
+          ) / denom;
+          return {
+            x: l1a.x + ua * (l1b.x - l1a.x),
+            y: l1a.y + ub * (l1b.y - l1a.y),
+            ratio1: ua,
+            ratio2: ub,
+          };
+        }
+        
+        function threePointAngle(a, b, c) {
+          const ab = {x:b.x - a.x, y:b.y - a.y};
+          const cb = {x:c.x - b.x, y:c.y - b.y};
+          const dotProduct = (ab.x * cb.x + ab.y * cb.y);
+          const crossProduct = (ab.x * cb.y - ab.y * cb.x);
+          const alpha = Math.atan2(crossProduct, dotProduct);
+          return alpha;
+        }
         
         function addPoint(x, y) {
           const circ = svgEl('circle');
@@ -34,6 +86,78 @@
           circ.setAttribute('cy', y);
           circ.setAttribute('r', 5);
           perspectivePane.selection.appendChild(circ);
+          
+          points.push({x:x, y:y});
+          
+          if (points.length === 4) {
+            while (perspectivePane.selection.firstChild) {
+              perspectivePane.selection.removeChild(perspectivePane.selection.firstChild);
+            }
+            var corners = points.splice(0, 4);
+            // untwist an X-shaped quad
+            if (lineSegsCross(corners[0],corners[3], corners[1],corners[2])) {
+              corners.splice(2, 2, corners[3], corners[2]);
+            }
+            // reverse a counterclockwise quad
+            if (threePointAngle(corners[0], corners[1], corners[2]) < 0) {
+              corners.splice(1, 3, corners[3], corners[2], corners[1]);
+            }
+            // check that what we have now is a convex quad
+            if (
+              threePointAngle(corners[0], corners[1], corners[2]) <= 0.1
+              || threePointAngle(corners[1], corners[2], corners[3]) <= 0.1
+              || threePointAngle(corners[2], corners[3], corners[0]) <= 0.1
+              || threePointAngle(corners[3], corners[0], corners[1]) <= 0.1
+            ) {
+              return;
+            }
+            var vanish1 = getIntersectionPoint(corners[0], corners[1], corners[2], corners[3]);
+            var vanish2 = getIntersectionPoint(corners[1], corners[2], corners[3], corners[0]);
+            var data = [];
+            if (vanish1) {
+              if (vanish1.ratio1 <= 0) {
+                data.push('M' + corners[0].x + ',' + corners[0].y);
+              }
+              else {
+                data.push('M' + corners[1].x + ',' + corners[1].y);
+              }
+              data.push('L' + vanish1.x + ',' + vanish1.y);
+              if (vanish1.ratio2 <= 0) {
+                data.push('L' + corners[2].x + ',' + corners[2].y);
+              }
+              else {
+                data.push('L' + corners[3].x + ',' + corners[3].y);
+              }
+            }
+            else {
+              data.push('M' + corners[0].x + ',' + corners[0].y);
+              data.push('L' + corners[1].x + ',' + corners[1].y);
+              data.push('M' + corners[2].x + ',' + corners[2].y);
+              data.push('L' + corners[3].x + ',' + corners[3].y);
+            }
+            if (vanish2) {
+              if (vanish2.ratio1 <= 0) {
+                data.push('M' + corners[1].x + ',' + corners[1].y);
+              }
+              else {
+                data.push('M' + corners[2].x + ',' + corners[2].y);
+              }
+              data.push('L' + vanish2.x + ',' + vanish2.y);
+              if (vanish2.ratio2 <= 0) {
+                data.push('L' + corners[3].x + ',' + corners[3].y);
+              }
+              else {
+                data.push('L' + corners[0].x + ',' + corners[0].y);
+              }
+            }
+            else {
+              data.push('M' + corners[1].x + ',' + corners[1].y);
+              data.push('L' + corners[2].x + ',' + corners[2].y);
+              data.push('M' + corners[3].x + ',' + corners[3].y);
+              data.push('L' + corners[0].x + ',' + corners[0].y);
+            }
+            plane.setAttribute('d', data.join(''));
+          }
         }
         
         perspectivePane.selection = document.querySelector('#perspectivePane .selection');
@@ -50,6 +174,8 @@
   <body>
     <div class='paneContainer'>
       <svg class='pane' id='perspectivePane'>
+        <path id='horizon'/>
+        <path id='plane'/>
         <g class='selection'>
         </g>
       </svg>
