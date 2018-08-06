@@ -114,6 +114,7 @@
             var vanish1 = getIntersectionPoint(corners[0], corners[1], corners[2], corners[3]);
             var vanish2 = getIntersectionPoint(corners[1], corners[2], corners[3], corners[0]);
             var data = [];
+            vanish1 = vanish2 = null;
             if (vanish1) {
               if (vanish1.ratio1 <= 0) {
                 data.push('M' + corners[0].x + ',' + corners[0].y);
