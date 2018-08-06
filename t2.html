@@ -72,8 +72,8 @@
         }
         
         function threePointAngle(a, b, c) {
-          const ab = {x:b.x - a.x, y:b.y - a.y};
-          const cb = {x:c.x - b.x, y:c.y - b.y};
+          const ab = {x:b.x-a.x, y:b.y-a.y};
+          const cb = {x:c.x-b.x, y:c.y-b.y};
           const dotProduct = (ab.x * cb.x + ab.y * cb.y);
           const crossProduct = (ab.x * cb.y - ab.y * cb.x);
           const alpha = Math.atan2(crossProduct, dotProduct);
@@ -111,8 +111,8 @@
             ) {
               return;
             }
-            var vanish1 = getIntersectionPoint(corners[0], corners[1], corners[2], corners[3]);
-            var vanish2 = getIntersectionPoint(corners[1], corners[2], corners[3], corners[0]);
+            var vanish1 = getIntersectionPoint(corners[1], corners[2], corners[3], corners[0]);
+            var vanish2 = getIntersectionPoint(corners[0], corners[1], corners[2], corners[3]);
             var data = [];
             vanish1 = vanish2 = null;
             if (vanish1) {
