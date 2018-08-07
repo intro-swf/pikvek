@@ -111,22 +111,22 @@
             ) {
               return;
             }
-            var vanish1 = getIntersectionPoint(corners[0], corners[1], corners[2], corners[3]);
+            var vanish1 = getIntersectionPoint(corners[0], corners[1], corners[3], corners[2]);
             var vanish2 = getIntersectionPoint(corners[1], corners[2], corners[3], corners[0]);
             var data = [];
             if (vanish1) {
               if (vanish1.ratio1 <= 0) {
-                data.push('M' + corners[1].x + ',' + corners[1].y);
+                data.push('M' + corners[0].x + ',' + corners[0].y);
               }
               else {
-                data.push('M' + corners[0].x + ',' + corners[0].y);
+                data.push('M' + corners[1].x + ',' + corners[1].y);
               }
               data.push('L' + vanish1.x + ',' + vanish1.y);
               if (vanish1.ratio2 <= 0) {
-                data.push('L' + corners[3].x + ',' + corners[3].y);
+                data.push('L' + corners[2].x + ',' + corners[2].y);
               }
               else {
-                data.push('L' + corners[2].x + ',' + corners[2].y);
+                data.push('L' + corners[3].x + ',' + corners[3].y);
               }
             }
             else {
