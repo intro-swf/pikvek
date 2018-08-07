@@ -116,10 +116,10 @@
             var data = [];
             if (vanish1) {
               if (vanish1.ratio1 <= 0) {
-                data.push('M' + corners[0].x + ',' + corners[0].y);
+                data.push('M' + corners[1].x + ',' + corners[1].y);
               }
               else {
-                data.push('M' + corners[1].x + ',' + corners[1].y);
+                data.push('M' + corners[0].x + ',' + corners[0].y);
               }
               data.push('L' + vanish1.x + ',' + vanish1.y);
               if (vanish1.ratio2 <= 0) {
